@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cloudflare Workers API Kit</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="badge">Cloudflare Pages Functions Sample</p>
+      <h1>Cloudflare Workers API Kit</h1>
+      <p class="lead">
+        フォームからAPIへPOSTし、Cloudflare Pages FunctionsでJSONを返却する
+        最小構成の動作確認サンプルです。
+      </p>
+    </section>
+
+    <section class="grid">
+      <section class="card">
+        <h2>API動作確認</h2>
+        <p class="card-text">
+          入力したメッセージを <code>POST /api/echo</code> に送信します。
+        </p>
+
+        <form id="apiForm" class="form">
+          <label for="message">送信メッセージ</label>
+          <input
+            id="message"
+            name="message"
+            type="text"
+            placeholder="例：Cloudflare Pages Functions"
+            required
+          />
+          <button type="submit">APIを実行する</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>APIレスポンス</h2>
+        <p class="card-text">
+          APIから返却されたJSONを表示します。
+        </p>
+        <pre id="result" class="result">まだ実行されていません。</pre>
+      </section>
+    </section>
+
+    <section class="card flow-card">
+      <h2>処理の流れ</h2>
+      <div class="flow">
+        <div>画面入力</div>
+        <span>→</span>
+        <div>POST /api/echo</div>
+        <span>→</span>
+        <div>Functions</div>
+        <span>→</span>
+        <div>JSON返却</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
