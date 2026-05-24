@@ -42,7 +42,7 @@ flowchart LR
 ローカル実行時：
 
 ```text
-http://127.0.0.1:8788
+http://127.0.0.1:8787
 ```
 
 Cloudflare Pages デプロイ後：
@@ -174,14 +174,14 @@ JSON として返却します。
 PowerShell またはコマンドプロンプトで以下を実行します。
 
 ```bash
-npx wrangler pages dev .
+npx wrangler dev
 ```
 
 起動後、
 以下 URL へアクセスします。
 
 ```text
-http://127.0.0.1:8788
+http://127.0.0.1:8787
 ```
 
 ---
