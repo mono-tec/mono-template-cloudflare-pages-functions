@@ -1,12 +1,12 @@
 ---
 title: Cloudflare Workers API仕様書
-version: v1.0.0
+version: v1.1.0
 date: 2026-05-24
 ---
 
 # 1. 文書概要
 
-本書は、Cloudflare Pages Functions を利用した  
+本書は、Cloudflare Workers を利用した
 サンプル API の仕様を整理したものです。
 
 本 API は、
@@ -16,7 +16,7 @@ date: 2026-05-24
 ↓
 POST
 ↓
-API(Function)
+Cloudflare Workers API
 ↓
 JSON返却
 ```
@@ -29,9 +29,22 @@ JSON返却
 
 ```mermaid
 flowchart LR
-  Browser[ブラウザ] --> API[Cloudflare Pages Functions]
+  Browser[ブラウザ] --> API[Cloudflare Workers]
   API --> JSON[JSONレスポンス]
 ```
+
+## 2.1 構成イメージ
+
+```text
+/
+├─ public/
+├─ functions/
+│   └─ api/
+│       └─ echo.js
+└─ wrangler.jsonc
+```
+
+
 
 ---
 
@@ -45,7 +58,7 @@ flowchart LR
 http://127.0.0.1:8787
 ```
 
-Cloudflare Pages デプロイ後：
+Cloudflare Workers Deploy 後：
 
 ```text
 https://xxxxx.pages.dev
@@ -100,7 +113,7 @@ API が動作しているか確認するためのエンドポイントです。
 ```json
 {
   "ok": true,
-  "message": "Cloudflare Pages Functions API is running.",
+  "message": "Cloudflare Workers API is running.",
   "endpoint": "POST /api/echo"
 }
 ```
@@ -186,20 +199,20 @@ http://127.0.0.1:8787
 
 ---
 
-# 7. GitHub / Cloudflare Pages 連携
+# 7. GitHub / Cloudflare Workers 連携
 
 本サンプルは以下構成を想定しています。
 
 ```text
 GitHub
 ↓
-Cloudflare Pages
+Cloudflare Workers
 ↓
 自動Deploy
 ```
 
 GitHub へ Push を行うと、
-Cloudflare Pages 側で自動的に再デプロイされます。
+Cloudflare Workers 側で自動的に再デプロイされます。
 
 ---
 
@@ -221,3 +234,4 @@ Cloudflare Pages 側で自動的に再デプロイされます。
 | 版数 | 改定日 | 内容 |
 |---|---|---|
 | v1.0.0 | 2026-05-24 | 初版 |
+| v1.1.0 | 2026-05-25 | Cloudflare Workers 構成へ修正 |
