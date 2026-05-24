@@ -1,0 +1,11 @@
+{
+  "name": "mono-template-cloudflare-pages-functions",
+  "main": "functions/api/echo.js",
+  "compatibility_date": "2026-05-24",
+  "assets": {
+    "directory": "public",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  }
+}

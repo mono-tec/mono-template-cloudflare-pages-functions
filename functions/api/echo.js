@@ -1,84 +1,103 @@
-// POST /api/echo が呼ばれたときに実行される
-export async function onRequestPost(context) {
+// Cloudflare Workers エントリポイント
+// main に functions/api/echo.js を指定しているため、
+// この fetch() が全HTTPリクエストを受け取ります。
 
-  try {
+export default {
 
-    // リクエストBody(JSON)を取得
-    const body = await context.request.json();
+  // HTTPリクエスト受信時に実行
+  async fetch(request, env) {
 
-    // message が文字列か確認し、前後の空白を除去
-    const message =
-      typeof body.message === "string"
-        ? body.message.trim()
-        : "";
+    // リクエストURL解析
+    const url = new URL(request.url);
 
-    // message が空の場合はエラー返却
-    if (!message) {
+    // --------------------------------------------------
+    // API : /api/echo
+    // --------------------------------------------------
+    if (url.pathname === "/api/echo") {
 
-      return jsonResponse({
-        ok: false,
-        error: "message is required."
-      }, 400);
+      // ----------------------------------------------
+      // GET : API動作確認
+      // ----------------------------------------------
+      if (request.method === "GET") {
 
-    }
-
-    // 正常時はJSONを返却
-    return jsonResponse({
-      ok: true,
-
-      // 受信したメッセージ
-      message,
-
-      // メッセージ文字数
-      length: message.length,
-
-      // サーバ受信日時
-      receivedAt: new Date().toISOString()
-    });
-
-  } catch (error) {
-
-    // JSON解析失敗時のエラー返却
-    return jsonResponse({
-      ok: false,
-      error: "Invalid JSON request body."
-    }, 400);
-
-  }
-
-}
-
-// GET /api/echo が呼ばれたときに実行される
-export async function onRequestGet() {
-
-  // API疎通確認用レスポンス
-  return jsonResponse({
-    ok: true,
-    message: "Cloudflare Pages Functions API is running.",
-    endpoint: "POST /api/echo"
-  });
-
-}
-
-// JSONレスポンス生成共通関数
-function jsonResponse(data, status = 200) {
-
-  // JSON形式でResponseを返却
-  return new Response(
-
-    // JSON文字列化
-    JSON.stringify(data, null, 2),
-
-    {
-      // HTTPステータスコード
-      status,
-
-      // レスポンスヘッダ
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
+        return Response.json({
+          ok: true,
+          message: "Cloudflare Workers API is running.",
+          endpoint: "POST /api/echo"
+        });
       }
+
+      // ----------------------------------------------
+      // POST : メッセージ受信
+      // ----------------------------------------------
+      if (request.method === "POST") {
+
+        try {
+
+          // JSON Body取得
+          const body = await request.json();
+
+          // message取得
+          const message =
+            typeof body.message === "string"
+              ? body.message.trim()
+              : "";
+
+          // message未入力チェック
+          if (!message) {
+
+            return Response.json(
+              {
+                ok: false,
+                error: "message is required."
+              },
+              {
+                status: 400
+              }
+            );
+          }
+
+          // 正常レスポンス返却
+          return Response.json({
+            ok: true,
+            message,
+            length: message.length,
+            receivedAt: new Date().toISOString()
+          });
+
+        } catch (error) {
+
+          // JSON解析失敗
+          return Response.json(
+            {
+              ok: false,
+              error: "Invalid JSON request body."
+            },
+            {
+              status: 400
+            }
+          );
+        }
+      }
+
+      // ----------------------------------------------
+      // GET / POST以外
+      // ----------------------------------------------
+      return Response.json(
+        {
+          ok: false,
+          error: "Method Not Allowed"
+        },
+        {
+          status: 405
+        }
+      );
     }
 
-  );
-
-}
+    // --------------------------------------------------
+    // API以外のURL
+    // --------------------------------------------------
+    // public/index.html など静的ファイルへ処理を渡す
+    return env.ASSETS.fetch(request);
+  }
+};

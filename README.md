@@ -1,13 +1,13 @@
 # mono-sample-cloudflare-pages-workers-form
 
-Cloudflare Pages Functions を利用した、  
+Cloudflare Workers を利用した、
 
 ```text
 フォーム
 ↓
 POST
 ↓
-API(Function)
+API(Worker)
 ↓
 JSON返却
 ```
@@ -20,14 +20,14 @@ JSON返却
 
 本 Repository は、
 
-- fork（コピー）
-- clone
-- ローカル実行
-- Cloudflare Pages への Deploy
+* fork（コピー）
+* clone
+* ローカル実行
+* Cloudflare Workers Deploy
 
 を試しながら、
 
-> 「Cloudflare Pages Functions の基本構成」
+> 「Cloudflare Workers + 静的配信構成」
 
 を学習・検証する用途を想定しています。
 
@@ -35,12 +35,13 @@ JSON返却
 
 ## 本サンプルで確認できること
 
-- Cloudflare Pages Functions
-- fetch API による POST 通信
-- JSON レスポンス返却
-- Wrangler によるローカル実行
-- GitHub Repository 連携
-- Cloudflare Pages Deploy
+* Cloudflare Workers
+* fetch API による POST 通信
+* JSON レスポンス返却
+* Wrangler によるローカル実行
+* GitHub Repository 連携
+* Cloudflare Workers Deploy
+* 静的ファイル配信（public ディレクトリ）
 
 ---
 
@@ -51,7 +52,7 @@ Wrangler 実行用として Node.js が必要です。
 
 今回は以下環境で動作確認しています。
 
-- Node.js 26.x
+* Node.js 26.x
 
 ---
 
@@ -59,14 +60,16 @@ Wrangler 実行用として Node.js が必要です。
 
 ```text
 /
-├─ index.html
-├─ styles.css
-├─ script.js
+├─ public/
+│   ├─ index.html
+│   ├─ styles.css
+│   └─ script.js
 ├─ functions/
 │   └─ api/
 │       └─ echo.js
 ├─ docs/
 │   └─ internal-api-spec.md
+├─ wrangler.jsonc
 └─ README.md
 ```
 
@@ -89,29 +92,50 @@ PowerShell またはコマンドプロンプトで、
 以下を実行します。
 
 ```bash
-npx wrangler pages dev .
+npx wrangler dev
 ```
 
 起動後、
-コンソールに表示された URL  
-（例：http://127.0.0.1:8788）  
+コンソールに表示された URL
+（例：[http://127.0.0.1:8787）](http://127.0.0.1:8787）)
 へアクセスします。
 
 ---
 
-## Cloudflare Pages への Deploy
+## Cloudflare Workers への Deploy
 
-GitHub Repository を Cloudflare Pages と連携することで、
+GitHub Repository を Cloudflare Workers と連携することで、
 Cloudflare 上へ Deploy できます。
 
 GitHub へ Push を行うと、
-Cloudflare Pages 側で自動的に再 Deploy されます。
+Cloudflare 側で自動的に再 Deploy されます。
 
 ---
 
-## Related Articles
+## Wrangler設定
 
-準備中
+本サンプルでは、
+`wrangler.jsonc` を利用して、
+
+* Worker エントリポイント
+* 静的ファイル配信
+* public ディレクトリ
+
+を設定しています。
+
+```json
+{
+  "name": "mono-template-cloudflare-pages-functions",
+  "main": "functions/api/echo.js",
+  "compatibility_date": "2026-05-24",
+  "assets": {
+    "directory": "public",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  }
+}
+```
 
 ---
 
@@ -125,8 +149,18 @@ MIT License © 2026 mono-tec
 
 本プロジェクトは、
 
-- 学習用途
-- 検証用途
-- サンプル用途
+* 学習用途
+* 検証用途
+* サンプル用途
 
 を主目的として公開しています。
+
+---
+
+## 補足
+
+Wrangler はファイル監視を行うため、
+他ツールが使用中のファイルが存在する場合、
+ファイル監視エラーが発生することがあります。
+
+Visual Studi
